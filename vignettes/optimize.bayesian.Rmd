@@ -42,7 +42,7 @@ Libraries required:
 
 It is possible to do bayesian optimization. It requires a loss function, a parameter set, and to call the bayesian optimizer. Here, we are testing on xgboost with EuStockMarkets data.
 
-As with any vector optimization, please make sure the type of the data is correct. For instance, \code{c(max_depth = 5, subsample = 0.1, tree_method = "hist")} is a character vector. By default, automatic transformation is made so you just have to pick up the element by the index, everything is done for you.
+As with any vector optimization, please make sure the type of the data is correct. For instance, `c(max_depth = 5, subsample = 0.1, tree_method = "hist")` is a character vector. By default, automatic transformation is made so you just have to pick up the element by the index, everything is done for you.
 
 Therefore, please use vector indexes to access the different elements of the parameters provided to the loss function. This is the safest way to access the values inside the vector/list, otherwise you are going to spend time class-checking the inputs for no value (other than losing your time).
 
