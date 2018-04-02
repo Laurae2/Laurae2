@@ -1,0 +1,71 @@
+---
+title: "data.table.rc"
+author: "Laurae"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{data.table.rc}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+  %\VignetteDepends{data.table}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+## Loading libraries
+
+```{r}
+library(data.table)
+library(Laurae2)
+```
+
+## Create a data.table using RC format
+
+Functions:
+
+* data.table.rc
+
+Libraries required:
+
+* data.table
+
+It is also possible to create a data.table using the RC format. It requires a list as `values` or any vector.
+
+The syntax is identical to \code{data.frame.rc}
+
+```{r}
+# Create default named [5, 5] data.frame
+data.table.rc(0, nrow = 5, ncol = 5)
+
+# Create named [5, 5] data.frame
+data.table.rc(0, nrow = 5, ncol = 5, column_names = c("car", "minicooper", "truck", "porsche", "speedo"))
+
+# Create named [5, 5] data.frame with values
+data.table.rc(list(1:5,
+                   c(TRUE, FALSE, TRUE, FALSE, TRUE),
+                   5:1,
+                   c("has", "not", "has", "not", "has"),
+                   c(150L, 200L, 250L, 300L, 350L)),
+              nrow = 5, ncol = 5)
+
+# Create named [5, 5] data.frame with named values
+data.table.rc(list(1:5,
+                   c(TRUE, FALSE, TRUE, FALSE, TRUE),
+                   5:1,
+                   c("has", "not", "has", "not", "has"),
+                   c(150L, 200L, 250L, 300L, 350L)),
+              nrow = 5, ncol = 5, column_names = c("car", "minicooper", "truck", "porsche", "speedo"))
+
+# Create named [5, 5] data.frame with values
+data.table.rc(list(car = 1:5,
+                   minicooper = c(TRUE, FALSE, TRUE, FALSE, TRUE),
+                   truck = 5:1,
+                   porsche = c("has", "not", "has", "not", "has"),
+                   speedo = c(150L, 200L, 250L, 300L, 350L)),
+              nrow = 5, ncol = 5)
+```

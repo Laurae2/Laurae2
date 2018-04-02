@@ -1,0 +1,115 @@
+---
+title: "optimize.bayesian"
+author: "Laurae"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{data.table.rc}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+  %\VignetteDepends{mlrMBO}
+  %\VignetteDepends{xgboost}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+## Loading libraries
+
+```{r}
+library(mlrMBO)
+library(Laurae2)
+```
+
+## Perform Bayesian Optimization for xgboost
+
+Functions:
+
+* optimize.bayesian
+
+Libraries required:
+
+* mlrMBO
+* xgboost
+* lhs
+* smoof
+* ParamHelpers
+* rgenoud
+
+It is possible to do bayesian optimization. It requires a loss function, a parameter set, and to call the bayesian optimizer. Here, we are testing on xgboost with EuStockMarkets data.
+
+As with any vector optimization, please make sure the type of the data is correct. For instance, \code{c(max_depth = 5, subsample = 0.1, tree_method = "hist")} is a character vector. By default, automatic transformation is made so you just have to pick up the element by the index, everything is done for you.
+
+Therefore, please use vector indexes to access the different elements of the parameters provided to the loss function. This is the safest way to access the values inside the vector/list, otherwise you are going to spend time class-checking the inputs for no value (other than losing your time).
+
+```{r}
+library(xgboost)
+
+# Load demo data
+data(EuStockMarkets)
+
+# Transform dataset to "quantiles"
+for (i in 1:4) {
+  EuStockMarkets[, i] <- (ecdf(EuStockMarkets[, i]))(EuStockMarkets[, i])
+}
+
+# Create datasets: 1500 observations for training, 360 for testing
+# Features are Deutscher Aktienindex (DAX), Swiss Market Index (SMI), and Cotation Assistee en Continu (CAC)
+# Label is Financial Times Stock Exchange 100 Index (FTSE)
+dtrain <- xgb.DMatrix(EuStockMarkets[1:1500, 1:3], label = EuStockMarkets[1:1500, 4])
+dval <- xgb.DMatrix(EuStockMarkets[1501:1860, 1:3], label = EuStockMarkets[1501:1860, 4])
+
+# Create watchlist for monitoring metric
+watchlist <- list(train = dtrain, eval = dval)
+
+# Our loss function to optimize: minimize RMSE
+xgboost_optimization <- function(x) {
+  
+  # Train the model
+  gc(verbose = FALSE)
+  set.seed(1)
+  model <- xgb.train(params = list(max_depth = x[1],
+                                   subsample = x[2],
+                                   tree_method = x[3],
+                                   eta = 0.2,
+                                   nthread = 1,
+                                   objective = "reg:linear",
+                                   eval_metric = "rmse"),
+                     data = dtrain, # Warn: Access using parent environment
+                     nrounds = 9999999,
+                     watchlist = watchlist, # Warn: Access using parent environment
+                     early_stopping_rounds = 5,
+                     verbose = 0)
+  score <- model$best_score
+  rm(model)
+  return(score)
+  
+}
+
+# The paramters: max_depth in [1, 15], subsample in [0.1, 1], and tree_method IN {exact, hist}
+my_parameters <- makeParamSet(
+  makeIntegerParam(id = "max_depth", lower = 1, upper = 15),
+  makeNumericParam(id = "subsample", lower = 0.1, upper = 1),
+  makeDiscreteParam(id = "tree_method", values = c("exact", "hist"))
+)
+
+# Perform optimization
+optimization <- optimize.bayesian(loss_func = xgboost_optimization,
+                                  param_set = my_parameters,
+                                  seed = 1,
+                                  maximize = FALSE,
+                                  initialization = 10,
+                                  max_evaluations = 25,
+                                  time_budget = 30,
+                                  verbose = TRUE)
+
+# What are the best parameters?
+optimize.bayesian.best(optimization)
+
+# What was optimized? And their loss?
+optimize.bayesian.all(optimization)
+```
