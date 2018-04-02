@@ -112,4 +112,7 @@ optimize.bayesian.best(optimization)
 
 # What was optimized? And their loss?
 optimize.bayesian.all(optimization)
+
+# Make movie from the optimization - Commented here as it outputs HTML file
+# optimize.bayesian.movie.html(optimization)
 ```

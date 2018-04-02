@@ -14,6 +14,7 @@ Suggests: knitr,
 	lhs,
 	smoof,
 	ParamHelpers,
-	xgboost
+	xgboost,
+	animation
 VignetteBuilder: knitr
 RoxygenNote: 6.0.1

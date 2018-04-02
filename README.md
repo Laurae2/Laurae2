@@ -22,7 +22,7 @@ Pre-requirement installation:
 
 ```r
 install.packages("devtools")
-install.packages(c("knitr", "rmarkdown", "mlrMBO", "lhs", "smoof", "ParamHelpers"))
+install.packages(c("knitr", "rmarkdown", "mlrMBO", "lhs", "smoof", "ParamHelpers", "animation"))
 ```
 
 xgboost installation, commit dmlc/xgboost@017acf5 seems best currently as it has gblinear improvements. Make sure to use the right compiler below:
@@ -33,13 +33,12 @@ devtools::install_github("Laurae2/xgbdl")
 # gcc
 xgbdl::xgb.dl(compiler = "gcc", commit = "017acf5", use_avx = FALSE, use_gpu = FALSE)
 
-# Visual Studio 2015
+# Visual Studio 2015, use AVX if you wish to
 xgbdl::xgb.dl(compiler = "Visual Studio 14 2015 Win64", commit = "017acf5", use_avx = FALSE, use_gpu = FALSE)
 
-# Visual Studio 2017
+# Visual Studio 2017, use AVX if you wish to
 xgbdl::xgb.dl(compiler = "Visual Studio 15 2017 Win64", commit = "017acf5", use_avx = FALSE, use_gpu = FALSE)
 ```
-
 
 ## What can it do?
 
@@ -57,4 +56,5 @@ Package requirements:
 * lhs
 * smoof
 * ParamHelpers
+* animation
 * xgboost

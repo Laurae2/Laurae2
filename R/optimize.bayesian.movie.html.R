@@ -1,13 +1,22 @@
-#' Bayesian Optimization, All Results Set
+#' Bayesian Optimization, Movie Maker, HTML
 #'
-#' \code{optimize.bayesian.all} gets all the results issued from \code{optimize.bayesian}.
+#' \code{optimize.bayesian.movie.html} generates an optimization movie from \code{optimize.bayesian}.
 #'
 #' Please see vignette for demos: \code{vignette("optimize.bayesian", package = "Laurae2")} or \code{help_me("optimize.bayesian")}.
 #'
-#' @param optimized Type: List returned from \code{optimize.bayesian}. The object to look for all the results.
+#' @param optimized Type: List returned from \code{optimize.bayesian}. The object to make the movie from.
+#' @param folder Type: character. The output folder for the images of the HTML movie. Defauls to \code{"movie"}.
+#' @param file Type: character. The output file for the HTML movie, without path. Defauls to \code{"index.html"}.
+#' @param title Type: character. The title of the HTML movie. Defaults to \code{"Bayesian Optimization in R"}.
+#' @param autobrowse Type: logical. Whether to open the HTML movie once finished. Defaults to \code{TRUE}.
+#' @param width Type: numeric. Width in pixels. Note that 40 pixels are removed for the borders to fit the provided width. Defaults to \code{1280}.
+#' @param height Type: numeric. Height in pixels. Note that 88 pixels are removed for the borders to fit the provided height. Defaults to \code{720}.
+#' @param navigator Type: logical. Whether to provide a progress bar on the HTML file. Defaults to \code{TRUE}.
 #'
-#' @return A data.frame containing all the results set from the bayesian optimization. A column y refers to the loss function value for the according parameters on the same row.
+#' @return None.
 #' @export
+#'
+#' @importFrom graphics plot
 #'
 #' @examples
 #' \dontrun{
@@ -75,10 +84,16 @@
 #'                                   time_budget = 30,
 #'                                   verbose = TRUE)
 #'
-#' # What was optimized? And their loss?
-#' optimize.bayesian.all(optimization)
+#' # Make movie from the optimization
+#' optimize.bayesian.movie.html(optimization)
 #' }
 
-optimize.bayesian.all <- function(optimized) {
-  return(optimized$opt.path$env$path)
+optimize.bayesian.movie.html <- function(optimized, folder = "movie", file = "index.html", title = "Bayesian Optimization in R", autobrowse = TRUE, width = 1280, height = 720, navigator = TRUE) {
+
+  animation::saveHTML({
+    for (i in 0:max(optimized$opt.path$env$dob)) {
+      plot(optimized, iters = i)
+    }
+  }, ani.width = width - 40, ani.height = height - 88, title = title, imgdir = folder, htmlfile = file, navigator = navigator, autobrowse = autobrowse, verbose = FALSE)
+
 }
