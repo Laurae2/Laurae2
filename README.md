@@ -2,7 +2,7 @@
 
 The sequel to [Laurae](https://github.com/Laurae2/Laurae) R-package.
 
-Each function has at least one corresponding vignette to look up for an example using \code{help_me("my_function_name")}.
+Each function has at least one corresponding vignette to look up for an example using `help_me("my_function_name")`.
 
 ## Installation
 

@@ -10,3 +10,5 @@ devtools::use_vignette("optimize.bayesian")
 devtools::check()
 
 devtools::install(build_vignettes = TRUE)
+
+devtools::install_github("Laurae2/Laurae2", build_vignettes = TRUE)
